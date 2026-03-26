@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+export const runtime = "nodejs";
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
