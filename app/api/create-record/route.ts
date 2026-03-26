@@ -1,4 +1,6 @@
 export const runtime = "nodejs";
+
+import { kv } from "@vercel/kv"; // 👈 THIS LINE MUST EXIST
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
