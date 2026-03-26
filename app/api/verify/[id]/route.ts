@@ -13,10 +13,10 @@ function generateHash(pack: any) {
 // 📥 GET REPORT
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json(
@@ -51,7 +51,6 @@ export async function GET(
       hash: report.hash,
       verified,
     });
-
   } catch (err) {
     console.error(err);
     return NextResponse.json(
@@ -101,7 +100,6 @@ export async function POST(request: NextRequest) {
       id,
       hash,
     });
-
   } catch (err) {
     console.error(err);
     return NextResponse.json(
