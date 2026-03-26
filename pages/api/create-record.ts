@@ -1,10 +1,7 @@
-export const runtime = "nodejs";
-
-import { kv } from "@vercel/kv"; // 👈 THIS LINE MUST EXIST
+import type { NextApiRequest, NextApiResponse } from "next";
+import { kv } from "@vercel/kv";
 import crypto from "crypto";
-import { NextRequest, NextResponse } from "next/server";
 
-// 🔐 HASH FUNCTION
 function generateHash(pack: any) {
   return crypto
     .createHash("sha256")
@@ -12,39 +9,32 @@ function generateHash(pack: any) {
     .digest("hex");
 }
 
-// 📤 CREATE REPORT (BACKEND GENERATES ID)
-export async function POST(request: NextRequest) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   try {
-    const body = await request.json();
+    const pack = req.body.pack || req.body;
 
-    const pack = body.pack || body;
-
-    // ✅ BACKEND CREATES ID
     const id = "RS-" + Date.now();
     const timestamp = Date.now();
-
     const hash = generateHash(pack);
 
-    const report = {
-      id,
-      pack,
-      timestamp,
-      hash,
-    };
+    const report = { id, pack, timestamp, hash };
 
     await kv.set(`report:${id}`, report);
 
-    return NextResponse.json({
+    return res.status(200).json({
       success: true,
       id,
-      verifyUrl: `https://rentsimple-web.vercel.app/api/verify/${id}`,
+      verifyUrl: `https://rentsimple-web.vercel.app/verify/${id}`,
     });
-
   } catch (err) {
     console.error(err);
-    return NextResponse.json(
-      { error: "Failed to save report" },
-      { status: 500 }
-    );
+    return res.status(500).json({ error: "Failed to save report" });
   }
 }
