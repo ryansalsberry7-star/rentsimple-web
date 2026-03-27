@@ -3,13 +3,13 @@ import { kv } from "@vercel/kv";
 export const dynamic = "force-dynamic";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default async function VerifyPage({ params }: PageProps) {
-  const { id } = params;
+  const { id } = await params;
 
   const data = await kv.get(`report:${id}`);
 
