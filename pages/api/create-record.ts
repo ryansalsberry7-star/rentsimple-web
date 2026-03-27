@@ -18,7 +18,7 @@ export default async function handler(
   }
 
   try {
-    const pack = req.body.pack || req.body;
+    const pack = req.body?.pack || req.body;
 
     const id = "RS-" + Date.now();
     const timestamp = Date.now();
@@ -31,6 +31,7 @@ export default async function handler(
     return res.status(200).json({
       success: true,
       id,
+      hash,
       verifyUrl: `https://rentsimple-web.vercel.app/verify/${id}`,
     });
   } catch (err) {
