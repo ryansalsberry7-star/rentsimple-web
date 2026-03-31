@@ -1,0 +1,3 @@
+> git pull --tags origin main
+fatal: bad object refs/heads/main 2
+error: https://github.com/ryansalsberry7-star/rentsimple-web.git did not send all necessary objects
